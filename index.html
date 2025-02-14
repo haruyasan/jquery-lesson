@@ -86,6 +86,24 @@
     <script>
       // 今回やるのはフィルタリング機能です。
       // selectボックスをクリックして言語を選び、その言語と関係のあるリストだけが表示されるプログラムです。
+$('.select').change(function() {
+  var value = $(this).val();  
+
+  // var data = $('.list > li').data('category-type');
+
+  if (value === 'all') {
+    $('.list > li').show()
+  } else {
+    $('.list > li').each(function(){
+      if ($(this).data('category-type') === value) {
+        $(this).show()
+      } else {
+        $(this).hide()
+      }
+    });
+  }
+});
+
       // [処理の流れ]
       // ・セレクトボックスをクリックする。
       // ・セレクトボックスのvalueとliのdata-category-typeが一致しているものをだけ表示させる。
