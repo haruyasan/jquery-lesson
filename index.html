@@ -16,6 +16,107 @@
   <script src="../../common/js/jquery.js"></script>
   <script>
     // 回答はここに書いてね
+
+$(document).on('click','#pokemon_search', function() {
+  let lotsofPokemon = Math.floor(Math.random() * 151) + 1;
+
+    $.ajax({
+      url: `https://pokeapi.co/api/v2/pokemon/${lotsofPokemon}`,
+      method: 'GET'
+
+      }).done(function(res) {   //成功時
+        let image = res.sprites.front_default 
+
+        //ポケモンを探す
+        $.ajax({
+          url: `https://pokeapi.co/api/v2/pokemon-species/${lotsofPokemon}`,
+          method: 'GET'
+        
+        }).done(function(res) {
+          let jap = res.names[0].name
+          let encountHtml = 
+             `
+              <p class="name">${jap}</p>
+              <div>
+                <img class="img" src="${image}" alt="">
+              </div>
+              <div>
+                <button class="btn" id="catch">捕まえる</button>
+                <button class="btn" data-js="reset">逃げる</button>
+              </div>  
+            `
+              $('.wrapper').html(encountHtml);
+
+              //逃げる
+            $('.btn[data-js="reset"]').on('click', function() {
+              let searchHtml = '<button type="button" class="btn search-btn" id="pokemon_search">ポケモンを探す</button>'
+              $('.wrapper').html(searchHtml);
+            });
+
+              //捕まえる
+            $('#catch').on('click', function() {
+        
+          $.ajax({
+              url: 'https://pokeapi.co/api/v2/item/4',
+              method: 'GET'
+  
+          }).done(function(res) {
+            
+          let pokeball = res.sprites.default
+
+          let result = Math.floor(Math.random() * 2) + 1;
+          if (result === 1) {
+            let doneHtml =
+            `
+              <p class="name">ゲットしました</p>
+            <div>
+              <img class="img" src="${pokeball}" alt="">
+            </div>
+              <button class="btn" data-js="reset">戻る</button>
+            `
+            $('.wrapper').html(doneHtml);
+
+            $('.btn[data-js="reset"]').on('click', function() {
+              let searchHtml = '<button type="button" class="btn search-btn" id="pokemon_search">ポケモンを探す</button>'
+              $('.wrapper').html(searchHtml);
+             });
+
+             //捕まえようとしたが逃げられた
+          } else {
+            let failHtml =
+            `
+            <p class="text">逃げられてしまった...</p>
+              <button class="btn mt" data-js="reset">戻る</button>
+            `
+            $('.wrapper').html(failHtml);
+
+            $('.btn[data-js="reset"]').on('click', function() {
+              let searchHtml = '<button type="button" class="btn search-btn" id="pokemon_search">ポケモンを探す</button>'
+              $('.wrapper').html(searchHtml);
+             });
+            };  //else文終了
+
+
+          }); //done終了
+                
+          
+          }).fail(function(err) {
+            console.log(err)
+        });
+
+
+      }).fail(function(err) {   
+    $('.wrapper').html("<p>データの取得に失敗しました。</p>");
+      });
+
+
+  }).fail(function(err) {  
+    $('.wrapper').html("<p>データの取得に失敗しました。</p>");
+  });
+
+
+});
+
   </script>
 </body>
 </html>
